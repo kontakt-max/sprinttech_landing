@@ -62,7 +62,7 @@
   }
 
   .heading-display {
-    @apply text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl;
+    @apply text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-[3.5rem] xl:leading-[1.08];
   }
 
   .heading-section {
@@ -107,5 +107,54 @@
 
   .input-field {
     @apply mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-colors focus:border-cyber-cyan/50 focus:outline-none focus:ring-1 focus:ring-cyber-cyan/30;
+  }
+
+  .command-panel {
+    @apply rounded-2xl border border-white/10 bg-navy-900/70 backdrop-blur-xl shadow-2xl shadow-black/20;
+  }
+
+  .command-panel-hover {
+    @apply command-panel transition-all duration-300 hover:border-cyber-cyan/25 hover:shadow-cyber-cyan/5;
+  }
+
+  .metric-card {
+    @apply rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3;
+  }
+
+  .scenario-tab {
+    @apply rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/60 transition-all hover:border-white/20 hover:text-white/80 sm:text-sm;
+  }
+
+  .scenario-tab-active {
+    @apply border-cyber-cyan/40 bg-cyber-cyan/10 text-cyber-cyan;
+  }
+
+  .source-pill {
+    @apply rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-white/60 transition-colors hover:border-cyber-cyan/30 hover:text-cyber-cyan;
+  }
+
+  .data-freshness-badge {
+    @apply inline-block rounded border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-white/40;
+  }
+
+  .premium-grid-bg {
+    background-image:
+      linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 102, 255, 0.12), transparent);
+    background-size: 40px 40px, 40px 40px, 100% 100%;
+  }
+
+  .glow-border {
+    @apply border border-cyber-cyan/15 shadow-[inset_0_0_30px_rgba(0,212,255,0.03)];
+  }
+
+  .animated-edge {
+    animation: edge-flow 3s linear infinite;
+  }
+
+  @keyframes edge-flow {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -12; }
   }
 }

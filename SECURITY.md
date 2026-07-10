@@ -62,7 +62,22 @@ Cel odpowiedzi: 5 dni roboczych.
 5. **Rotacja kluczy**: Google SA, Soro, LinkedIn — cykliczna rotacja
 6. **Backup**: arkusz Google Sheets + eksport okresowy
 
-## Known Limitations
+### Threat Pulse API
+
+- [x] Server-side only fetch (NVD, EPSS)
+- [x] Cache 6h domyślnie
+- [x] Rate limiting na `/api/threat-pulse`
+- [x] Zod validation response
+- [x] `assertNoPiiInResponse()` — brak email/IP w odpowiedzi
+- [x] Brak raw indicators (IP/host)
+- [x] Shadowserver disabled by default
+- [x] Scenariusze hero oznaczone jako symulacja procesu
+- [x] Attribution źródeł w UI
+
+### CSP debt
+
+- `unsafe-inline` dla script/style wymagane tymczasowo przez Next.js — rozważ nonce w przyszłej iteracji
+- Globalne nagłówki spięte w `next.config.ts` via `getSecurityHeaders()`
 
 - Rate limiter in-memory nie współdzieli stanu między instancjami serverless
 - Qualification form mapuje `companySize` na domyślną wartość — uzupełniane na konsultacji

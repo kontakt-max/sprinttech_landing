@@ -30,9 +30,41 @@ Strona: http://localhost:3000
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript |
 
-## Konfiguracja środowiska
+## Threat Pulse (publiczne źródła)
 
-Skopiuj `.env.example` do `.env.local`. **Nigdy nie commituj sekretów.**
+Endpoint: `GET /api/threat-pulse` — agreguje legalne publiczne dane:
+
+| Źródło | Typ | Opis |
+|--------|-----|------|
+| NVD (NIST) | API | CVE critical/high z ostatnich 7 dni |
+| FIRST EPSS | API | Prawdopodobieństwo eksploatacji |
+| MITRE ATT&CK | Statyczny subset | Wizualizacja procesu SOC |
+| ENISA TL 2025 | Statyczne | Kuratorowane statystyki z raportu |
+| Verizon DBIR 2026 | Statyczne | Kuratorowane statystyki z raportu |
+| Shadowserver | **Wyłączony** | Tylko link — brak scrapingu |
+
+- Cache serwerowy: domyślnie 6h (`THREAT_PULSE_CACHE_TTL_HOURS`)
+- Rate limiting na endpoint
+- Fallback UI gdy API niedostępne
+- **Nie jest to telemetria klientów SprintTech**
+
+### Edycja treści hero
+
+- Copy hero: `src/data/home.ts`
+- Scenariusze interaktywne: `src/data/heroScenarios.ts`
+- Źródła danych: `src/data/threatSources.ts`
+- Statystyki raportów: `src/data/reportStats.ts`
+
+## Threat Pulse (publiczne źródła) — konfiguracja
+
+```env
+THREAT_PULSE_ENABLED=true
+THREAT_PULSE_CACHE_TTL_HOURS=6
+NVD_API_KEY=          # opcjonalny, zwiększa rate limit NVD
+SHADOWSERVER_INTEGRATION_ENABLED=false
+PUBLIC_THREAT_SOURCES_ATTRIBUTION_ENABLED=true
+```
+
 
 ### Google Sheets (leady)
 
