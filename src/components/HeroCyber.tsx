@@ -22,6 +22,7 @@ const radarNodes = [
   { x: 40, y: 65, label: "Network" },
 ];
 
+/** @deprecated Use ThreatPulseHero from @/components/home/ThreatPulseHero */
 export function HeroCyber() {
   const prefersReducedMotion = useReducedMotion();
   const [activeAlert, setActiveAlert] = useState(0);

@@ -1,23 +1,11 @@
 import type { NextConfig } from "next";
+import { getSecurityHeaders } from "./src/lib/security/headers";
 
-const securityHeaders = [
-  {
-    key: "X-DNS-Prefetch-Control",
-    value: "on",
-  },
-  {
-    key: "X-Content-Type-Options",
-    value: "nosniff",
-  },
-  {
-    key: "Referrer-Policy",
-    value: "strict-origin-when-cross-origin",
-  },
-  {
-    key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
-  },
-];
+const globalSecurityHeaders = getSecurityHeaders({
+  allowGoogleForms: process.env.NEXT_PUBLIC_GOOGLE_FORM_EMBED_URL ? true : false,
+  allowLinkedIn: process.env.NEXT_PUBLIC_LINKEDIN_INSIGHT_TAG_ENABLED === "true",
+  allowAnalytics: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true",
+});
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -29,7 +17,10 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/:path*",
-        headers: securityHeaders,
+        headers: Object.entries(globalSecurityHeaders).map(([key, value]) => ({
+          key,
+          value,
+        })),
       },
     ];
   },

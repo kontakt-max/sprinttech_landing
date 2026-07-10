@@ -34,6 +34,7 @@ const mitreTactics = [
   { name: "Exfiltration", count: 0, active: false },
 ];
 
+/** @deprecated Integrated into ThreatCommandCenter on home page */
 export function SocRadar() {
   const prefersReducedMotion = useReducedMotion();
   const [activeStep, setActiveStep] = useState(0);
