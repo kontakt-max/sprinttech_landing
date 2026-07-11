@@ -20,6 +20,28 @@ npm run dev
 
 Strona: http://localhost:3000
 
+## Uruchomienie w Cursor
+
+```bash
+nvm use            # Node 20 LTS (patrz .nvmrc; Node 20–22 jest wspierany)
+npm ci
+cp .env.example .env.local
+npm run dev:cursor
+```
+
+- **Preview URL:** http://localhost:3000
+- **Health URL:** http://localhost:3000/api/health
+
+`npm run dev:cursor` uruchamia serwer na `0.0.0.0:3000`, dzięki czemu podgląd działa
+w Cursor. Uwagi:
+
+- Aplikacja działa **bez sekretów** — nic nie trzeba uzupełniać, aby uruchomić podgląd.
+- Wszystkie integracje (Threat Pulse, Google Sheets/Forms, SORO AI SEO, LinkedIn Insight,
+  Shadowserver) są **domyślnie wyłączone**.
+- Brak `NVD_API_KEY`, kluczy Google czy SORO **nie blokuje** buildu ani renderowania strony —
+  integracje po prostu pozostają wyłączone, a UI korzysta z fallbacków.
+- Po zmianie `.env.local` **zrestartuj** serwer developerski (zmienne są wczytywane przy starcie).
+
 ## Konfiguracja zmiennych środowiskowych
 
 Pełny, opisany szablon znajduje się w [`.env.example`](./.env.example) (podzielony na sekcje:

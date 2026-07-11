@@ -4,11 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:cursor": "next dev --hostname 0.0.0.0 --port 3000",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "start": "next start --hostname 0.0.0.0 --port 3000",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "check": "npm run typecheck && npm run lint && npm run build",
     "analyze": "ANALYZE=true next build"
+  },
+  "engines": {
+    "node": ">=20 <23"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

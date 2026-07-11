@@ -3,13 +3,20 @@ export function buildCSP(options?: {
   allowLinkedIn?: boolean;
   allowAnalytics?: boolean;
 }): string {
+  const isDev = process.env.NODE_ENV !== "production";
+
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
-    "script-src": ["'self'", "'unsafe-inline'"],
+    // In development, Next.js React Fast Refresh evaluates code with eval(),
+    // and HMR uses a same-origin WebSocket — both require relaxing the CSP.
+    // Production keeps the strict policy (no 'unsafe-eval').
+    "script-src": isDev
+      ? ["'self'", "'unsafe-inline'", "'unsafe-eval'"]
+      : ["'self'", "'unsafe-inline'"],
     "style-src": ["'self'", "'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:", "https://www.linkedin.com"],
     "font-src": ["'self'"],
-    "connect-src": ["'self'"],
+    "connect-src": isDev ? ["'self'", "ws:", "wss:"] : ["'self'"],
     "frame-src": ["'none'"],
     "frame-ancestors": ["'none'"],
     "base-uri": ["'self'"],

@@ -58,8 +58,10 @@ const serverEnvSchema = z.object({
   LINKEDIN_ACCESS_TOKEN: optionalSecret,
 
   // --- Soro AI content webhook ---
+  SORO_WEBHOOK_ENABLED: boolFlag(false),
   SORO_WEBHOOK_API_KEY: optionalSecret,
   SORO_WEBHOOK_SECRET: optionalSecret,
+  SORO_PUBLISH_MODE: z.enum(["draft", "publish"]).default("draft"),
 
   // --- OpenAI Sora video ---
   SORA_VIDEO_ENABLED: boolFlag(false),
@@ -91,8 +93,10 @@ const parsedServer = serverEnvSchema.safeParse({
   LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
   LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET,
   LINKEDIN_ACCESS_TOKEN: process.env.LINKEDIN_ACCESS_TOKEN,
+  SORO_WEBHOOK_ENABLED: process.env.SORO_WEBHOOK_ENABLED,
   SORO_WEBHOOK_API_KEY: process.env.SORO_WEBHOOK_API_KEY,
   SORO_WEBHOOK_SECRET: process.env.SORO_WEBHOOK_SECRET,
+  SORO_PUBLISH_MODE: process.env.SORO_PUBLISH_MODE,
   SORA_VIDEO_ENABLED: process.env.SORA_VIDEO_ENABLED,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   SORA_DAILY_LIMIT: process.env.SORA_DAILY_LIMIT,
@@ -133,7 +137,11 @@ export const integrations = {
     accessToken: serverEnv.LINKEDIN_ACCESS_TOKEN,
   },
   soro: {
-    configured: Boolean(serverEnv.SORO_WEBHOOK_API_KEY || serverEnv.SORO_WEBHOOK_SECRET),
+    enabled: serverEnv.SORO_WEBHOOK_ENABLED,
+    configured:
+      serverEnv.SORO_WEBHOOK_ENABLED &&
+      Boolean(serverEnv.SORO_WEBHOOK_API_KEY || serverEnv.SORO_WEBHOOK_SECRET),
+    publishMode: serverEnv.SORO_PUBLISH_MODE,
     apiKey: serverEnv.SORO_WEBHOOK_API_KEY,
     secret: serverEnv.SORO_WEBHOOK_SECRET,
   },
