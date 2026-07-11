@@ -20,6 +20,72 @@ npm run dev
 
 Strona: http://localhost:3000
 
+## Konfiguracja zmiennych środowiskowych
+
+Pełny, opisany szablon znajduje się w [`.env.example`](./.env.example) (podzielony na sekcje:
+Site, Threat Intelligence, Google, LinkedIn, Soro, Sora, Rate limiting, Analytics, Security,
+Feature flags). Walidacja i typy zmiennych są scentralizowane:
+
+- `src/lib/env.ts` — zmienne **publiczne** (`NEXT_PUBLIC_*`), bezpieczne dla przeglądarki.
+- `src/lib/env.server.ts` — zmienne **server-side** (sekrety); plik ma `import "server-only"`,
+  więc jego zaimportowanie z komponentu `"use client"` przerywa build.
+
+Obie warstwy używają **Zod** — aplikacja zgłasza czytelny błąd przy nieprawidłowej konfiguracji,
+a opcjonalne integracje są bezpiecznie wyłączane, gdy brakuje klucza.
+
+### `.env.local` (development)
+
+```bash
+cp .env.example .env.local
+```
+
+Aplikacja działa lokalnie **bez żadnych sekretów**. Wystarczą wartości domyślne:
+
+```env
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_NAME=SprintTech
+THREAT_PULSE_ENABLED=true
+```
+
+`.env.local` jest w `.gitignore` i **nie może** być commitowany.
+
+### Zmienne wymagane
+
+| Środowisko | Wymagane minimum | Uwaga |
+|------------|------------------|-------|
+| **Lokalnie** | brak (działają wartości domyślne) | wszystkie integracje opcjonalne |
+| **Produkcyjnie** | `NEXT_PUBLIC_SITE_URL` (domena produkcyjna), `NEXT_PUBLIC_SITE_NAME` | reszta zależy od włączonych integracji |
+
+Integracje opcjonalne wymagają sekretów **tylko** gdy są włączone, np. leady w Google Sheets
+(`GOOGLE_SERVICE_ACCOUNT_*`, `GOOGLE_SHEETS_SPREADSHEET_ID`) lub Sora (`SORA_VIDEO_ENABLED=true`
+**i** `OPENAI_API_KEY`). Bez kluczy dana integracja jest po prostu wyłączona.
+
+### Vercel
+
+1. Projekt → **Settings → Environment Variables**.
+2. Dodaj zmienne dla `Production` / `Preview` / `Development`.
+3. Ustaw `NEXT_PUBLIC_SITE_URL` na domenę produkcyjną.
+4. Sekrety (`OPENAI_API_KEY`, `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`, tokeny LinkedIn, klucze Soro)
+   dodawaj wyłącznie jako zmienne **bez** prefiksu `NEXT_PUBLIC_`.
+5. Redeploy po zmianach (zmienne są wstrzykiwane w czasie build/runtime).
+
+### Cloudflare Pages
+
+1. **Settings → Environment variables**.
+2. Zmienne publiczne (`NEXT_PUBLIC_*`) → zwykłe **Plaintext** variables.
+3. Sekrety server-side → oznacz jako **Secret** (encrypted) — nie trafią do bundla klienta.
+4. Dla API routes wymagany adapter (`@cloudflare/next-on-pages`).
+
+### Dlaczego `NEXT_PUBLIC_*` nie może zawierać sekretów
+
+Next.js **statycznie wstawia** (inline) każdą zmienną `NEXT_PUBLIC_*` do JavaScriptu wysyłanego
+do przeglądarki. Taka wartość jest widoczna dla każdego użytkownika w źródle strony. Dlatego:
+
+- `NEXT_PUBLIC_*` = tylko dane jawne (URL-e, nazwy, flagi funkcji).
+- Sekrety (klucze API, tokeny, klucze prywatne) trzymamy **bez** prefiksu i czytamy je wyłącznie
+  przez `src/lib/env.server.ts` (server-side). Guard `server-only` uniemożliwia ich przypadkowe
+  zbundlowanie po stronie klienta.
+
 ## Skrypty
 
 | Skrypt | Opis |
@@ -60,8 +126,11 @@ Endpoint: `GET /api/threat-pulse` — agreguje legalne publiczne dane:
 ```env
 THREAT_PULSE_ENABLED=true
 THREAT_PULSE_CACHE_TTL_HOURS=6
-NVD_API_KEY=          # opcjonalny, zwiększa rate limit NVD
+THREAT_PULSE_REQUEST_TIMEOUT_MS=5000   # timeout żądań do źródeł (ms)
+THREAT_PULSE_MAX_CVES=20               # maksymalna liczba pobieranych CVE
+NVD_API_KEY=                           # opcjonalny, zwiększa rate limit NVD
 SHADOWSERVER_INTEGRATION_ENABLED=false
+SHADOWSERVER_API_KEY=                  # opcjonalny, wymagany przy integracji
 PUBLIC_THREAT_SOURCES_ATTRIBUTION_ENABLED=true
 ```
 

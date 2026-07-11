@@ -1,8 +1,9 @@
 import type { ThreatVulnerability } from "@/lib/validation/threatPulse";
 import { getCached, setCache, getCacheTtlHours } from "../cache";
+import { integrations } from "@/lib/env.server";
 
 const NVD_BASE = "https://services.nvd.nist.gov/rest/json/cves/2.0";
-const FETCH_TIMEOUT = 12000;
+const FETCH_TIMEOUT = integrations.threatPulse.requestTimeoutMs;
 const USER_AGENT = "SprintTech-ThreatPulse/1.0 (security research; kontakt@sprinttech.pl)";
 
 interface NvdCveItem {
@@ -110,16 +111,17 @@ export async function fetchRecentCves(days = 7): Promise<{
     return { vulnerabilities: cached, status: "cached", fetchedAt: new Date().toISOString() };
   }
 
+  const maxCves = integrations.threatPulse.maxCves;
   const end = new Date();
   const start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
   const params = new URLSearchParams({
     pubStartDate: start.toISOString(),
     pubEndDate: end.toISOString(),
-    resultsPerPage: "20",
+    resultsPerPage: String(Math.max(maxCves, 20)),
   });
 
   const headers: Record<string, string> = { "User-Agent": USER_AGENT };
-  const apiKey = process.env.NVD_API_KEY;
+  const apiKey = integrations.threatPulse.nvdApiKey;
   if (apiKey) headers["apiKey"] = apiKey;
 
   try {
@@ -133,7 +135,7 @@ export async function fetchRecentCves(days = 7): Promise<{
       .map(parseNvdItem)
       .filter((v): v is ThreatVulnerability => v !== null)
       .filter((v) => v.severity === "CRITICAL" || v.severity === "HIGH")
-      .slice(0, 10);
+      .slice(0, maxCves);
 
     if (parsed.length === 0) {
       return { vulnerabilities: FALLBACK_CVES, status: "fallback", fetchedAt: null };

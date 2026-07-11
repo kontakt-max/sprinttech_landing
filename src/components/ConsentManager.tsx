@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { X, Cookie, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { publicEnv } from "@/lib/env";
 
 export type ConsentCategory = "necessary" | "analytics" | "marketing" | "thirdParty";
 
@@ -220,9 +221,7 @@ function ConsentToggle({
 export function LinkedInInsightTag() {
   const { consent, loaded } = useConsent();
   const enabled =
-    loaded &&
-    consent.marketing &&
-    process.env.NEXT_PUBLIC_LINKEDIN_INSIGHT_TAG_ENABLED === "true";
+    loaded && consent.marketing && publicEnv.NEXT_PUBLIC_LINKEDIN_INSIGHT_TAG_ENABLED;
 
   useEffect(() => {
     if (!enabled) return;

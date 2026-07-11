@@ -1,8 +1,9 @@
 import type { ThreatVulnerability } from "@/lib/validation/threatPulse";
 import { getCached, setCache, getCacheTtlHours } from "../cache";
+import { integrations } from "@/lib/env.server";
 
 const EPSS_API = "https://api.first.org/data/v1/epss";
-const FETCH_TIMEOUT = 12000;
+const FETCH_TIMEOUT = integrations.threatPulse.requestTimeoutMs;
 const USER_AGENT = "SprintTech-ThreatPulse/1.0 (security research; kontakt@sprinttech.pl)";
 
 interface EpssItem {

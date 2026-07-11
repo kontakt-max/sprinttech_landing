@@ -3,6 +3,7 @@ import { soraVideoRequestSchema } from "@/lib/validation/integrations";
 import { rateLimit, getClientIp } from "@/lib/security/rate-limit";
 import { logIntegrationEvent } from "@/lib/integrations/helpers";
 import { getSecurityHeaders } from "@/lib/security/headers";
+import { integrations } from "@/lib/env.server";
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
@@ -12,10 +13,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
   }
 
-  const enabled = process.env.SORA_VIDEO_ENABLED === "true";
-  const apiKey = process.env.OPENAI_API_KEY;
-
-  if (!enabled || !apiKey) {
+  if (!integrations.sora.enabled) {
     logIntegrationEvent("sora", "not_implemented");
     return NextResponse.json(
       {

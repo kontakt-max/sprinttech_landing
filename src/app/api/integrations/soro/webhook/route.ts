@@ -8,6 +8,7 @@ import {
   logIntegrationEvent,
 } from "@/lib/integrations/helpers";
 import { getSecurityHeaders } from "@/lib/security/headers";
+import { integrations } from "@/lib/env.server";
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
@@ -17,10 +18,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
   }
 
-  const apiKey = process.env.SORO_WEBHOOK_API_KEY;
-  const secret = process.env.SORO_WEBHOOK_SECRET;
+  const apiKey = integrations.soro.apiKey;
+  const secret = integrations.soro.secret;
 
-  if (!apiKey && !secret) {
+  if (!integrations.soro.configured) {
     logIntegrationEvent("soro", "webhook_disabled");
     return NextResponse.json(
       { error: "Webhook not configured" },

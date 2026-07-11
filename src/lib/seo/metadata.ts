@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getSiteUrl } from "@/lib/utils";
+import { publicEnv } from "@/lib/env";
 
 interface PageSEOProps {
   title: string;
@@ -86,10 +87,7 @@ export function organizationJsonLd() {
       "ISO 27001",
       "OT/ICS Security",
     ],
-    sameAs: [
-      process.env.NEXT_PUBLIC_LINKEDIN_COMPANY_URL ??
-        "https://www.linkedin.com/company/sprinttech",
-    ],
+    sameAs: [publicEnv.NEXT_PUBLIC_LINKEDIN_COMPANY_URL],
   };
 }
 

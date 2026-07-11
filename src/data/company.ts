@@ -1,3 +1,5 @@
+import { publicEnv } from "@/lib/env";
+
 export const companyInfo = {
   name: "SprintTech",
   legalName: "SprintTech Sp. z o.o.",
@@ -7,9 +9,7 @@ export const companyInfo = {
     "Wyspecjalizowana spółka cyberbezpieczeństwa oferująca pentesty, audyty, SOC, compliance i bezpieczeństwo OT/ICS. Certyfikat ISO/IEC 27001:2022.",
   email: "kontakt@sprinttech.pl",
   phone: "+48 22 000 00 00",
-  linkedin:
-    process.env.NEXT_PUBLIC_LINKEDIN_COMPANY_URL ??
-    "https://www.linkedin.com/company/sprinttech",
+  linkedin: publicEnv.NEXT_PUBLIC_LINKEDIN_COMPANY_URL,
   certifications: [
     "ISO/IEC 27001:2022",
     "SOC",

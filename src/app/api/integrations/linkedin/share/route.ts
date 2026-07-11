@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSecurityHeaders } from "@/lib/security/headers";
 import { logIntegrationEvent } from "@/lib/integrations/helpers";
+import { integrations } from "@/lib/env.server";
 
 /**
  * Placeholder for LinkedIn OAuth share API.
@@ -8,10 +9,7 @@ import { logIntegrationEvent } from "@/lib/integrations/helpers";
  * Share buttons on the frontend use LinkedIn's public share URL instead.
  */
 export async function POST(request: Request) {
-  const clientId = process.env.LINKEDIN_CLIENT_ID;
-  const accessToken = process.env.LINKEDIN_ACCESS_TOKEN;
-
-  if (!clientId || !accessToken) {
+  if (!integrations.linkedInApi.configured) {
     logIntegrationEvent("linkedin", "api_not_configured");
     return NextResponse.json(
       {

@@ -2,6 +2,7 @@
 
 import { useConsent } from "@/components/ConsentManager";
 import { ExternalLink } from "lucide-react";
+import { publicEnv } from "@/lib/env";
 
 interface GoogleFormEmbedProps {
   embedUrl?: string;
@@ -10,8 +11,8 @@ interface GoogleFormEmbedProps {
 }
 
 export function GoogleFormEmbed({
-  embedUrl = process.env.NEXT_PUBLIC_GOOGLE_FORM_EMBED_URL,
-  fallbackUrl = process.env.NEXT_PUBLIC_GOOGLE_FORM_FALLBACK_URL,
+  embedUrl = publicEnv.NEXT_PUBLIC_GOOGLE_FORM_EMBED_URL,
+  fallbackUrl = publicEnv.NEXT_PUBLIC_GOOGLE_FORM_FALLBACK_URL,
   title = "Formularz kontaktowy SprintTech",
 }: GoogleFormEmbedProps) {
   const { consent, loaded } = useConsent();

@@ -1,3 +1,5 @@
+import { serverEnv } from "@/lib/env.server";
+
 interface RateLimitEntry {
   count: number;
   resetAt: number;
@@ -5,8 +7,8 @@ interface RateLimitEntry {
 
 const store = new Map<string, RateLimitEntry>();
 
-const MAX_REQUESTS = parseInt(process.env.RATE_LIMIT_MAX_REQUESTS ?? "5", 10);
-const WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? "60000", 10);
+const MAX_REQUESTS = serverEnv.RATE_LIMIT_MAX_REQUESTS;
+const WINDOW_MS = serverEnv.RATE_LIMIT_WINDOW_MS;
 
 export interface RateLimitResult {
   success: boolean;

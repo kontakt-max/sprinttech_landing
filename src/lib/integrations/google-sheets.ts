@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import type { LeadFormData } from "@/lib/validation/lead";
 import { randomUUID } from "crypto";
+import { integrations } from "@/lib/env.server";
 
 interface GoogleSheetsConfig {
   serviceAccountEmail: string;
@@ -10,13 +11,11 @@ interface GoogleSheetsConfig {
 }
 
 function getGoogleSheetsConfig(): GoogleSheetsConfig | null {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const key = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, "\n");
-  const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
-  const sheetName = process.env.GOOGLE_SHEETS_SHEET_NAME ?? "Leads";
+  const { configured, email, privateKey, spreadsheetId, sheetName } =
+    integrations.googleSheets;
 
-  if (!email || !key || !spreadsheetId) return null;
-  return { serviceAccountEmail: email, privateKey: key, spreadsheetId, sheetName };
+  if (!configured || !email || !privateKey || !spreadsheetId) return null;
+  return { serviceAccountEmail: email, privateKey, spreadsheetId, sheetName };
 }
 
 export async function appendLeadToSheet(

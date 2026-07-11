@@ -1,4 +1,5 @@
 /** Shadowserver connector — disabled by default. No scraping, no raw indicators. */
+import { integrations } from "@/lib/env.server";
 
 export interface ShadowserverInfo {
   enabled: boolean;
@@ -8,9 +9,7 @@ export interface ShadowserverInfo {
 }
 
 export function getShadowserverInfo(): ShadowserverInfo {
-  const enabled =
-    process.env.SHADOWSERVER_INTEGRATION_ENABLED === "true" &&
-    Boolean(process.env.SHADOWSERVER_API_KEY);
+  const enabled = integrations.shadowserver.enabled;
 
   return {
     enabled,

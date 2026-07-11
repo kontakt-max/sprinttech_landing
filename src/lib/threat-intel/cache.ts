@@ -1,3 +1,5 @@
+import { serverEnv } from "@/lib/env.server";
+
 interface CacheEntry<T> {
   data: T;
   expiresAt: number;
@@ -23,9 +25,9 @@ export function setCache<T>(key: string, data: T, ttlHours: number): void {
 }
 
 export function getCacheTtlHours(): number {
-  return parseInt(process.env.THREAT_PULSE_CACHE_TTL_HOURS ?? "6", 10);
+  return serverEnv.THREAT_PULSE_CACHE_TTL_HOURS;
 }
 
 export function isThreatPulseEnabled(): boolean {
-  return process.env.THREAT_PULSE_ENABLED !== "false";
+  return serverEnv.THREAT_PULSE_ENABLED;
 }

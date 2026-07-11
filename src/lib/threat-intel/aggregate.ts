@@ -10,11 +10,11 @@ import {
   assertNoPiiInResponse,
 } from "@/lib/validation/threatPulse";
 import { isThreatPulseEnabled } from "./cache";
+import { integrations } from "@/lib/env.server";
 
 export async function aggregateThreatPulse(): Promise<ThreatPulseResponse> {
   const now = new Date().toISOString();
-  const attributionEnabled =
-    process.env.PUBLIC_THREAT_SOURCES_ATTRIBUTION_ENABLED !== "false";
+  const attributionEnabled = integrations.threatPulse.attributionEnabled;
 
   if (!isThreatPulseEnabled()) {
     return buildFallbackResponse(now, attributionEnabled, "disabled");
@@ -25,7 +25,10 @@ export async function aggregateThreatPulse(): Promise<ThreatPulseResponse> {
     fetchTopEpss(50),
   ]);
 
-  const vulnerabilities = mergeEpssIntoVulns(nvdResult.vulnerabilities, epssResult.scores).slice(0, 8);
+  const vulnerabilities = mergeEpssIntoVulns(
+    nvdResult.vulnerabilities,
+    epssResult.scores,
+  ).slice(0, integrations.threatPulse.maxCves);
 
   const metrics = reportStats.map((s) => ({
     id: s.id,

@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
 import { getSecurityHeaders } from "./src/lib/security/headers";
+import { publicEnv } from "./src/lib/env";
 
 const globalSecurityHeaders = getSecurityHeaders({
-  allowGoogleForms: process.env.NEXT_PUBLIC_GOOGLE_FORM_EMBED_URL ? true : false,
-  allowLinkedIn: process.env.NEXT_PUBLIC_LINKEDIN_INSIGHT_TAG_ENABLED === "true",
-  allowAnalytics: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true",
+  allowGoogleForms: Boolean(publicEnv.NEXT_PUBLIC_GOOGLE_FORM_EMBED_URL),
+  allowLinkedIn: publicEnv.NEXT_PUBLIC_LINKEDIN_INSIGHT_TAG_ENABLED,
+  allowAnalytics: publicEnv.NEXT_PUBLIC_ANALYTICS_ENABLED,
 });
 
 const nextConfig: NextConfig = {
